@@ -209,7 +209,7 @@ public class WarehouseManagementService {
 	 * @return
 	 */
 	public void query_kcxx(Parameters parameters, Bundle bundle) {
-		String param = " 1=1 ";
+		String param = " 1=1 and kcsl > 0 ";
 		if(null!=parameters.get("kwid")&&!"".equals(parameters.get("kwid"))){
 			param+=" and kwid = '"+parameters.get("kwid")+"'";
 		}
@@ -233,7 +233,7 @@ public class WarehouseManagementService {
 	 * @return
 	 */
 	public void query_kcxx_gz(Parameters parameters, Bundle bundle) {
-		String param = " 1=1 ";
+		String param = " 1=1 and kcsl > 0 ";
 		if(null!=parameters.get("kwid")&&!"".equals(parameters.get("kwid"))){
 			param+=" and kwid = '"+parameters.get("kwid")+"'";
 		}
@@ -249,6 +249,25 @@ public class WarehouseManagementService {
 			param+=" and wllb in( '10','20','30','60' )";
 		}
 		Dataset dataset_kcxx = Sys.query("kc_sjwlkc"," czsj, wlgg, kcsl, kfid, kwid, wlid, wltm, pcid, mplh, sjwlkcid,wllb ", param, null, new Object[]{});
+		bundle.put("kcxx", dataset_kcxx.getList());
+	}
+	/**查询库存全部数据信息
+	 * @param parameters
+	 * @param bundle
+	 * @return
+	 */
+	public void query_kcxxmxBySjwlkcid(Parameters parameters, Bundle bundle) {
+		String param = " 1=1 and kczt = '10' ";
+		if(null!=parameters.get("sjwlkcid")&&!"".equals(parameters.get("sjwlkcid"))){
+			param+=" and sjwlkcid = '"+parameters.get("sjwlkcid")+"'";
+		}
+		if(null!=parameters.get("wllb")&&!"".equals(parameters.get("wllb"))){
+			param+=" and wllb = '"+parameters.get("wllb")+"'";
+		}else{
+			param+=" and wllb in( '10','20','30','60' )";
+		}
+		Dataset dataset_kcxx = Sys.query("kc_wlkcmx","kczt, ckry, wlgg, kfid, rksj, rksl, wlid, rkdh, mplh, sjwlkcid, "
+				+ "cksl, cksj, yxq, kwid, rkry, wlkcmxid, pcid, wllb, jh ", param, null, new Object[]{});
 		bundle.put("kcxx", dataset_kcxx.getList());
 	}
 	/**查询库存全部数据信息

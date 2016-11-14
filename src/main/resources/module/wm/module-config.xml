@@ -67,6 +67,7 @@
 		<service name = "wmService_query_kcxx_by_mplh" activity = "service" activity-method = "query_kcxx_by_mplh"></service>
 		<service name = "wmService_query_kcxx" activity = "service" activity-method = "query_kcxx"></service>
 		<service name = "wmService_query_kcxx_gz" activity = "service" activity-method = "query_kcxx_gz"></service>
+		<service name = "wmService_query_kcxxmxBySjwlkcid" activity = "service" activity-method = "query_kcxxmxBySjwlkcid"></service>
 		<service name = "wmService_query_kfxx_by_kfmc" activity = "service" activity-method = "query_kfxx_by_kfmc"></service>
 		<service name = "wmService_query_kwxx_by_kwmc" activity = "service" activity-method = "query_kwxx_by_kwmc"></service>
 		<service name = "wmService_query_kfxx_by_kfid" activity = "service" activity-method = "query_kfxx_by_kfid"></service>
