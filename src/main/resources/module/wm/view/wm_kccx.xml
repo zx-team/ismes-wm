@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view name="kcxx" title="库存查询">
+	
+	<tabs>
+		<tab-nav>
+			<tab name="form-ljcx" label="零件库存查询" context="primary" active="true"/>
+			<tab name="form-wlcx" label="物料库存查询" context="primary" />
+		</tab-nav>
+
+		<tab-content name="form-ljcx">
+			<normal-actions>
+				<button name="queryBtn" label="查询"  type="button" icon="icon-query" onClick="openQueryLjWindow"></button>
+				<button name="ljexportBtn" label="导出"  type="button" icon="icon-query" onClick="ljexport"></button>
+			</normal-actions>
+			<table name="table_ljkccx" scroll="false" minheight="430" url="/kccx/lj_table" layoutconstraint="md:12;sm:12;" >
+				<column label="零件图号" name="ljbh"></column>
+				<column label="库存明细id" name="kcmxid" key="true" hidden="true"></column>
+				<column label="零件名称" name="ljmc"></column>
+				<column label="产品规格" name="clbh"></column>
+				<column label="库存状态" name="kczt" type="dict" dictionary="KCZT"></column>
+				<column label="库存数量" name="kcsl"></column>
+				<column label="库存天数" name="kcts"></column>
+				<column label="入库时间" name="rksj"></column>
+				<column label="入库数量" name="rksl"></column>
+				<column label="出库时间" name="cksj"></column>			
+				<column label="出库数量" name="cksl"></column>
+				<column label="客户单号" name="ckkhdh"></column>
+			</table>
+		</tab-content>
+		<tab-content name="form-wlcx">
+			<normal-actions>
+				<button name="querywlBtn" label="查询"  type="button" icon="icon-query" onClick="openQueryWlWindow"></button>
+				<button name="wlexportBtn" label="导出"  type="button" icon="icon-query" onClick="wlexport"></button>
+			</normal-actions>
+			<table name="table_wlkccx" scroll="false" minheight="430" url="/kccx/wl_table" layoutconstraint="md:12;sm:12;" >
+				<column label="物料编号" name="wlbh"></column>
+				<column label="库存流水id" name="kclsid" key="true" hidden="true"></column>
+				<column label="物料id" name="wlid" hidden="true"></column>
+				<column label="件号" name="jh"></column>
+				<column label="物料名称" name="wlmc"></column>
+				<column label="产品规格" name="wlgg"></column>
+				<column label="库存状态" name="kczt" type="dict" dictionary="KCZT"></column>
+				<column label="库存数量" name="kcsl"></column>
+				<column label="库存天数" name="kcts"></column>
+				<column label="入库时间" name="rksj"></column>
+				<column label="入库数量" name="rksl"></column>
+				<column label="出库时间" name="cksj"></column>
+				<column label="出库数量" name="cksl"></column>								
+			</table>
+		</tab-content>
+	</tabs>
+	
+	<!-- 零件查询窗体 start-->
+	<modal name="qyeryljModal" heading="查询库存信息" sizing="large" show="false" keyboard="true"  onShown="resetQueryWindow">
+		<modal-body>
+			<form name="qyeryljkcForm"  horizontal="true">
+				<form-body>
+					<form-group>
+						<label for="date1" text="入库时间" layoutconstraint="md:2"/>
+						<bunch layoutconstraint="md:10">
+							<input-inline width="medium">
+							<date name="date_rkbegin" placeholder="请输入起始日期" validate="{required:true}"/>
+							</input-inline>
+							<plaintext text="-"/>
+							<input-inline width="medium">
+							<date name="date_rkend" placeholder="请输入结束日期" validate="{required:true}"/>
+							</input-inline>
+						</bunch>
+					</form-group>
+					<form-group>
+						<label for="date1" text="出库时间" layoutconstraint="md:2"/>
+						<bunch layoutconstraint="md:10">
+							<input-inline width="medium">
+							<date name="date_ckbegin" placeholder="请输入起始日期" validate="{required:true}"/>
+							</input-inline>
+							<plaintext text="-"/>
+							<input-inline width="medium">
+							<date name="date_ckend" placeholder="请输入结束日期" validate="{required:true}"/>
+							</input-inline>
+						</bunch>
+					</form-group>
+				</form-body>
+			</form>
+		</modal-body>
+		<modal-footer>
+				<button name="resetqyeryModalClick" label="重置" type="button" onClick="resetQueryWindow"></button>
+				<button name="closeqyeryModalClick" label="取消" type="button" onClick="closeQueryWindow"></button>
+				<button name="qyeryModalClick" label="查询" type="button" context="primary" onClick="queryljBtnClick"></button>
+		</modal-footer>
+	</modal>
+	
+	<!-- 物料查询窗体 start-->
+	<modal name="qyerywlModal" heading="查询库存信息" sizing="large" show="false" keyboard="true"  onShown="resetQueryWindow">
+		<modal-body>
+			<form name="qyerywlkcForm"  horizontal="true">
+				<form-body>
+					<form-group>
+						<label for="date1" text="入库时间" layoutconstraint="md:2"/>
+						<bunch layoutconstraint="md:10">
+							<input-inline width="medium">
+							<date name="date_wlrkbegin" placeholder="请输入起始日期" validate="{required:true}"/>
+							</input-inline>
+							<plaintext text="-"/>
+							<input-inline width="medium">
+							<date name="date_wlrkend" placeholder="请输入结束日期" validate="{required:true}"/>
+							</input-inline>
+						</bunch>
+					</form-group>
+					<form-group>
+						<label for="date1" text="出库时间" layoutconstraint="md:2"/>
+						<bunch layoutconstraint="md:10">
+							<input-inline width="medium">
+							<date name="date_wlckbegin" placeholder="请输入起始日期" validate="{required:true}"/>
+							</input-inline>
+							<plaintext text="-"/>
+							<input-inline width="medium">
+							<date name="date_wlckend" placeholder="请输入结束日期" validate="{required:true}"/>
+							</input-inline>
+						</bunch>
+					</form-group>
+				</form-body>
+			</form>
+		</modal-body>
+		<modal-footer>
+				<button name="resetqyerywlModalClick" label="重置" type="button" onClick="resetQueryWindow"></button>
+				<button name="closeqyerywlModalClick" label="取消" type="button" onClick="closeQueryWindow"></button>
+				<button name="qyerywlModalClick" label="查询" type="button" context="primary" onClick="querywlBtnClick"></button>
+		</modal-footer>
+	</modal>
+	
+
+	<attribute name="javascript">
+		<![CDATA[
+			function openQueryLjWindow(){
+				ui.modal("qyeryljModal").show();
+			}
+			function openQueryWlWindow(){
+				ui.modal("qyerywlModal").show();
+			}
+			
+			//重置
+			function resetQueryWindow(){
+				$('#qyeryljkcForm')[0].reset();	
+				$('#qyerywlkcForm')[0].reset();			
+			}
+			//查询取消按钮
+		    function closeQueryWindow() {
+		    	ui.modal("qyeryljModal").hide();
+		    	ui.modal("qyerywlModal").hide();
+		    }
+		    function queryljBtnClick(){
+		    	var data_row = {};
+				data_row.date_rkbegin = $('#date_rkbegin').val();
+				data_row.date_rkend = $('#date_rkend').val();
+				data_row.date_ckbegin = $('#date_ckbegin').val();
+				data_row.date_ckend = $('#date_ckend').val();
+				ui.table("table_ljkccx").search(data_row);
+				closeQueryWindow();
+			}
+			function ljexport(){
+				var date_rkbegin = $('#date_rkbegin').val();
+				var date_rkend = $('#date_rkend').val();
+				var date_ckbegin = $('#date_ckbegin').val();
+				var date_ckend = $('#date_ckend').val();
+				
+				window.open(ui.getUrl("/wm/kccx/lj_export?date_rkbegin="+
+					date_rkbegin+"&date_rkend="+date_rkend+"&date_ckbegin="+date_ckbegin+
+					"&date_ckend="+date_ckend));
+			}
+			function wlexport(){
+				var date_rkbegin = $('#date_wlrkbegin').val();
+				var date_rkend = $('#date_wlrkend').val();
+				var date_ckbegin = $('#date_wlckbegin').val();
+				var date_ckend = $('#date_wlckend').val();
+				
+				window.open(ui.getUrl("/wm/kccx/wl_export?date_rkbegin="+
+					date_rkbegin+"&date_rkend="+date_rkend+"&date_ckbegin="+date_ckbegin+
+					"&date_ckend="+date_ckend));
+			}
+			function querywlBtnClick(){
+				var data_row = {};
+				data_row.date_rkbegin = $('#date_wlrkbegin').val();
+				data_row.date_rkend = $('#date_wlrkend').val();
+				data_row.date_ckbegin = $('#date_wlckbegin').val();
+				data_row.date_ckend = $('#date_wlckend').val();
+				ui.table("table_wlkccx").search(data_row);
+				closeQueryWindow();
+			}
+		]]>
+	</attribute>
+	
+</view>

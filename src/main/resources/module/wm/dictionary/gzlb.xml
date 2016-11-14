@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<category name="GZLB" label="工装类别"  description="工装类别">
+	<field name="" value="20" label="夹具" parent="" state="valid"/>
+	<field name="" value="30" label="量具" parent="" state="valid"/>
+</category>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<category name="DJLB" label="刀具类别"  description="刀具类别">
+	<field name="" value="10" label="刀柄" parent="" state="valid"/>
+	<field name="" value="60" label="刀片" parent="" state="valid"/>
+</category>
+

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<category name="JGLB" label="加工类别"  description="加工类别">
+	<field name="" value="40" label="毛坯" parent="" state="valid"/>
+	<field name="" value="50" label="原材料" parent="" state="valid"/>
+</category>
+

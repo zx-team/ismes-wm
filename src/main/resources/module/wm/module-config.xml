@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module name="wm" version="1.0.0" category="system">
+	<information>
+		<name>库存管理</name>
+		<vendor>
+			<name>Isesol isMES</name>
+			<url>http://www.isesol.com/</url>
+		</vendor>
+		<description></description>
+		<license>AGPL</license>
+	</information>
+	<activities>
+		<activity name="service" dialect="java" class="com.isesol.mes.ismes.wm.service.WarehouseManagementService"/>
+		<!-- 物料库存管理 -->
+		<activity name="kcgl" dialect="java" roles="STOCKMAN_ROLE" class="com.isesol.mes.ismes.wm.activity.WarehouseManagementActivity"/>
+		<!-- 库房管理 -->
+		<activity name="kfgl" dialect="java" roles="SYSTEM_MANAGEMENT_ROLE" class="com.isesol.mes.ismes.wm.activity.StoreroomManagementActivity"/>
+		<!-- 库位管理 -->
+		<activity name="kwgl" dialect="java" roles="SYSTEM_MANAGEMENT_ROLE" class="com.isesol.mes.ismes.wm.activity.StoreLocationManagementActivity"/>
+		<!-- 零件出库（零件库存管理） -->
+		<activity name="ljkcgl" dialect="java" roles="STOCKMAN_ROLE" class="com.isesol.mes.ismes.wm.activity.PartInventoryActivity"/>
+		<!-- 零件入库 -->
+		<activity name="ljkcglrk" dialect="java" roles="STOCKMAN_ROLE" class="com.isesol.mes.ismes.wm.activity.PartInventoryInActivity"/>
+		<!-- 工装库存管理 -->
+		<activity name="gzkcgl" dialect="java" roles="STOCKMAN_ROLE" class="com.isesol.mes.ismes.wm.activity.FrockActivity"/>
+		<!-- 刀具库存管理 -->
+		<activity name="djkcgl" dialect="java" roles="STOCKMAN_ROLE" class="com.isesol.mes.ismes.wm.activity.ToolStockManagementActivity"/>
+		<!-- 库存查询 -->
+		<activity name="kccx" dialect="java" roles="STOCKMAN_ROLE" class="com.isesol.mes.ismes.wm.activity.KccxActivity"/>
+	</activities>
+	<roles>
+		<role name="STOCKMAN_ROLE" label="仓库管理员_仓库管理" description="库存管理" />
+		<role name="SYSTEM_MANAGEMENT_ROLE" label="系统管理人员_仓库管理" description="系统基础信息设置" />
+	</roles>
+	<menus>
+		<!-- 生产管理（一级） -->
+		<category name="produce_manager" label="生产管理" icon="#539de7;Production_management"  weight="4"/>
+		<!-- 库存管理（二级） -->
+		<category name="stock_manager" label="库存管理" icon="button" category = "produce_manager" weight="50"/>
+		<menu name="wl_inventory_management_menu" label="物料库存管理" activity="kcgl" activity-method="query_kcgl" 
+ 			category="stock_manager" roles="STOCKMAN_ROLE" description="物料库存管理" icon="button" weight="100"/> 
+		<menu name="lj_inventory_management_out_menu" label="零件出库" activity="ljkcgl" activity-method="query_ljkcgl" 
+ 			category="stock_manager" roles="STOCKMAN_ROLE" description="零件出库" icon="button" weight="300"/> 
+ 		<menu name="lj_inventory_management_in_menu" label="零件入库" activity="ljkcglrk" activity-method="query_ljxx" 
+ 			category="stock_manager" roles="STOCKMAN_ROLE" description="零件入库" icon="button" weight="200"/> 
+ 		<menu name="gz_inventory_management_in_menu" label="工装库存管理" activity="gzkcgl" activity-method="query_gzkcgl"
+ 			category="stock_manager" roles="STOCKMAN_ROLE" description="工装库存管理" icon="button" weight="200"/> 
+ 		<menu name="dj_inventory_management_in_menu" label="刀具库存管理" activity="djkcgl" activity-method="query_djkcgl"
+ 			category="stock_manager" roles="STOCKMAN_ROLE" description="刀具库存管理" icon="button" weight="200"/> 
+ 		<menu name="kccx_menu" label="库存查询" activity="kccx" activity-method="query_kccx"
+ 			category="statement" roles="STOCKMAN_ROLE" description="库存查询" icon="button" weight="200"/> 
+		<!-- 系统管理（一级） -->
+		<category name="sysmanage" label="系统管理" icon="#fb5070;system_maintenance" weight="6"/>
+		<!-- 基础信息（二级） -->
+		<category name="source_manager" label="基础信息" icon="button " category = "sysmanage" weight="20"/>
+		<menu name="storeroom_management_menu" label="库房管理" activity="kfgl" activity-method="query_kfgl" 
+			category="source_manager" roles="SYSTEM_MANAGEMENT_ROLE" description="库房管理" icon="button" weight="100"/>
+		<menu name="storelocation_management_menu" label="库位管理" activity="kwgl" activity-method="query_kwgl" 
+			category="source_manager" roles="SYSTEM_MANAGEMENT_ROLE" description="库位管理" icon="button" weight="200"/>
+	</menus>
+	<services>
+		<service name = "wm_query_mplh" activity = "service" activity-method = "queryService_mplh"></service>
+		<service name = "wl_warehouseInfoByWlidService" activity = "service" activity-method = "wl_warehouseInfoByWlid"></service>
+		<service name = "lj_warehouseInfoByljidService" activity = "service" activity-method = "lj_warehouseInfoByLjid"></service>
+		<service name = "wmService_kcxx" activity = "service" activity-method = "queryService_kcxx"></service>
+		<service name = "wmService_sjwlkc" activity = "service" activity-method = "queryService_sjwlkcByIds"></service>
+		<service name = "wmService_query_kcxx_by_mplh" activity = "service" activity-method = "query_kcxx_by_mplh"></service>
+		<service name = "wmService_query_kcxx" activity = "service" activity-method = "query_kcxx"></service>
+		<service name = "wmService_query_kcxx_gz" activity = "service" activity-method = "query_kcxx_gz"></service>
+		<service name = "wmService_query_kfxx_by_kfmc" activity = "service" activity-method = "query_kfxx_by_kfmc"></service>
+		<service name = "wmService_query_kwxx_by_kwmc" activity = "service" activity-method = "query_kwxx_by_kwmc"></service>
+		<service name = "wmService_query_kfxx_by_kfid" activity = "service" activity-method = "query_kfxx_by_kfid"></service>
+		<service name = "wmService_query_kwxx_by_kwid" activity = "service" activity-method = "query_kwxx_by_kwid"></service>
+		
+		<!-- <service name = "wmService_query_kcxx_by_sjwlkcid" activity = "service" activity-method = "query_kcxx_by_sjwlkcid"></service> -->
+		<service name = "wmService_queryGzxxwltm" activity = "service" activity-method = "queryGzxxwltm"></service>
+		<service name = "wmService_queryWlkcByWlidLh" activity = "service" activity-method = "getWlkcByWlidLh"></service>
+		<service name = "wmService_queryWlkcByWlidandMplh" activity = "service" activity-method = "queryService_sjwlkcByIdandMplh"></service>
+	</services>
+</module>

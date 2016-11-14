@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 实际物料库存表 -->
+<model version="1.0.5" name="kc_sjwlkc">
+	<fields>
+		<sjwlkcid type="pk" pk="true" comment="实际库存ID" label="实际库存ID"/>
+		<wlid type="pk" comment="物料ID" label="物料ID"/>
+		<pcid type="string" comment="批次ID" label="批次ID"/>
+		<kfid type="pk" comment="库房ID" label="库房ID"/>
+		<kwid type="pk" comment="库位ID" label="库位ID"/>
+		<kcsl type="decimal" required="false" length="8" precision="2" comment="库存数量" label="库存数量"/>
+		<czsj type="timestamp" required="false" comment="操作时间" label="操作时间"/>
+		<mplh type="string" comment="毛坯炉号" label="毛坯炉号"/>
+		<wlgg type="string" comment="物料规格" label="物料规格"/>
+		<wltm type="string" comment="物料条码" label="物料条码"/>
+		<wllb type="string" comment="物料类别" label="物料类别"/><!-- 1.0.5增加物料类别 -->
+	</fields>
+</model>

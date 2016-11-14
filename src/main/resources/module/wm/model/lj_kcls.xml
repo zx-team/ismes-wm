@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 零件库存流水表 -->
+<model version="1.0.0" name="lj_kcls">
+	<fields>
+		<kclsid type="pk" pk="true" comment="库存流水ID" label="库存流水ID"/>
+		<kcmxid type="pk" comment="库存明细ID" label="库存明细ID"/>
+		<kfid type="pk" comment="库房ID" label="库房ID"/>
+		<kwid type="pk" comment="库位ID" label="库位ID"/>
+		<czlx type="string" required="false" maxlength="10" comment="操作类型(20出/10入库)" label="操作类型(出/入库)"/>
+		<sl type="decimal" length="8" precision="2" comment="数量" label="数量"/>
+		<kcsl type="decimal" length="8" precision="2" comment="库存数量" label="库存数量"/>
+		<czry type="string" required="false" maxlength="20" comment="操作人员" label="操作人员"/>
+		<czsj type="timestamp" comment="操作时间" label="操作时间"/>
+		<xh type="string" required="false" maxlength="20" comment="箱号" label="箱号"/>
+		<scph type="string" required="false" maxlength="20" comment="生产批号" label="生产批号"/>
+		<mplh type="string" required="false" maxlength="20" comment="毛坯炉号" label="毛坯炉号"/>
+	</fields>
+</model>

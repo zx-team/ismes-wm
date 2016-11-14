@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 物料库存流水 -->
+<model version="1.0.6" name="wm_wlls">
+	<fields>
+		<kclsid type="pk" pk="true" comment="库存流水ID" label="库存流水ID"/>
+		<sjkcid type="pk" required="false" maxLength="20" comment="实际库存ID" label="实际库存ID"/>
+		<kclslbdm type="dict" required="false" maxlength="20" comment="库存流水类别代码" label="库存流水类别代码"/>
+		<ljid type="pk" required="false"  comment="零件ID" label="零件ID"/>
+		<gxid type="pk" required="false"  comment="工序ID" label="工序ID"/>
+		<pcid type="string" required="false"  comment="批次ID" label="批次ID"/>
+		<gdid type="pk" required="false"  comment="工单ID" label="工单ID"/>
+		<wlid type="pk" required="false"  comment="物料ID" label="物料ID"/>
+		<kfid type="pk" required="false"  comment="库房ID" label="库房ID"/>
+		<kwid type="pk" required="false"  comment="库位ID" label="库位ID"/>
+		<sl type ="decimal" required="false" length="8" precision="2"  comment="数量" label="数量"/>
+		<zzjgid type="pk" required="false" comment="部门代码" label="部门代码"/>
+		<yggh type="pk" required="false" comment="员工工号" label="员工工号"/>
+		<czsj type = "timestamp" required="false" comment="操作时间" label="操作时间"/>
+		<bz type ="string" required="false" maxlength="500"  comment="备注" label="备注"/>
+		<rkdh type ="string" required="false"  comment="入库单号" label="入库单号"/>
+		<jh type="string" required="false"  comment="件号" label="件号"/><!-- 1.0.4增加件号  -->
+		<mplh type="string" comment="毛坯炉号" label="毛坯炉号"/><!-- 1.0.4增加毛坯炉号  -->
+		<kccx_enable type="string" comment="库存查询使能位" label="库存查询使能位"/><!-- 1.0.4增加库存查询使能位  -->
+		<wllb type="string" comment="物料类别" label="物料类别"/><!-- 1.0.5增加物料类别 -->
+		<wlgg type="string" comment="物料规格" label="物料规格"/><!-- 1.0.5增加物料类别 -->
+		<yxq type="timestamp" comment="有效期" label="有效期"/><!-- 1.0.6增加物料类别 -->
+	</fields>
+</model>

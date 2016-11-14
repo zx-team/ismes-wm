@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<category name="LJLX" label="零件类型"  description="零件类型">
+	<field name="" value="10" label="自制件" parent="" state="valid"/>
+	<field name="" value="20" label="采购件" parent="" state="valid"/>
+</category>

@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view name="wm_ljkcgl_rk" title="零件入库" onReady="ready">
+	<normal-actions>
+		<button name="queryBtn" label="查询"  type="button" icon="icon-query" onClick="openQueryWindow"></button>
+	</normal-actions>
+	<table name="table_kcgl" scroll="false" minheight="430" url="/ljkcglrk/table_ljscxx"   onSelectRow="table_ljkcClickrow" layoutconstraint="md:12;sm:12;" >
+		<column label="零件编号" name="ljbh"></column>
+		<column label="零件id" name="ljid" hidden="true"></column>
+		<column label="工单号" name="gdid" hidden="true"></column>
+		<column label="工单编号" name="gdbh" hidden="true"></column>
+		<column label="毛坯炉号" name="mplh"></column>
+		<column label="零件名称" name="ljmc"></column>
+		<column label="零件生产数量" name="pcsl" hidden='true'></column>
+		<column label="工单已完成数量" name="gdywcsl" hidden='true'></column>
+		<column label="零件单位" name="dw" hidden='true'></column>
+		<column label="生产批号" name="scph" ></column>
+		<!--  column label="生产任务编号" name="scrwbh" ></column> -->
+		<column label="箱号" name="xh" ></column>
+		<column label="生产数量" name="zxsl" ></column>
+		<column label="批次id" name="scrwpcid" hidden='true'></column>
+		<column label="工单id" name="gdid" hidden='true'></column>
+		<column label="批次编号" name="pcbh" hidden="true" ></column> 
+		<!-- column label="批次状态" name="pcjhztdm" type="dict"  dictionary="PCZT" ></column> -->
+		<column label="计划开始日期" name="pcjhksrq" type="date"></column>
+		<column label="计划完成日期" name="pcjhwcrq" type="date"></column>
+		<column label="实际完成日期" name="pcjhwcrq" type="date"></column>
+		<column label="操作" type="operation">
+			<attribute name="formatoptions"><![CDATA[
+					[
+						{
+							name:"edit",
+							icon:"icon-issue1",
+							label:"入库",
+							click:openAddWindow
+						}
+					]
+				]]></attribute>
+		</column>
+	</table>
+	
+	<modal name="qyeryModal" heading="查询库存信息" sizing="large" show="false" keyboard="true" >
+		<modal-body>
+			<form name="qyerykcglForm"  horizontal="true">
+				<form-body>
+					<form-group>
+						<label for="query_ljbh " text="零件图号" layoutconstraint="md:2;sm:2"/>
+						<text name="query_ljbh" placeholder="请输入零件图号" validate="{required:false}" layoutconstraint="md:7;sm:7;"/>
+					</form-group>
+					<form-group>
+						<label for="query_scrwbh" text="生产任务编号" layoutconstraint="md:2;sm:2"/>
+						<text name="query_scrwbh" placeholder="请输入生产任务编号" validate="{required:false}" layoutconstraint="md:7;sm:7;"/>
+					</form-group>
+					<form-group>
+						<label for="query_pcbh" text="批次编号" layoutconstraint="md:2"/>
+					    <text name="query_pcbh" validate="{required:false}" placeholder="请选择生产任务编号" layoutconstraint="md:7;"></text>
+ 					</form-group>
+				</form-body>
+			</form>
+		</modal-body>
+		<modal-footer>
+				<button name="resetqyeryModalClick" label="重置" type="button" onClick="resetQueryWindow"></button>
+				<button name="closeqyeryModalClick" label="取消" type="button" onClick="closeQueryWindow"></button>
+				<button name="qyeryModalClick" label="查询" type="button" context="primary" onClick="queryBtnClick"></button>
+		</modal-footer>
+	</modal>
+	
+	<modal name="addModal" heading="零件入库" sizing="large" show="false" keyboard="true"  onShown="addModalOnShown" >
+		<modal-body>
+			<form name="form_add"  horizontal="true"  action="/ljkcglrk/save_rkxx" multipart="true">
+				<form-body>
+					<form-group>
+						<label for="add_ljbh" text="零件图号" layoutconstraint="md:2;sm:2"/>
+						<text name="add_ljbh"  readonly="true"  placeholder="零件图号"    layoutconstraint="md:4;sm:4;"  />
+						<hidden name="add_ljid" />
+						<hidden name="add_pcbh" />
+						<hidden name="add_mplh" />
+						<hidden name="add_scrwpcid"   />
+						<hidden name="add_gdid"   />
+						
+						<label for="add_ljmc" text="零件名称" layoutconstraint="md:2;sm:2"/>
+						<text name="add_ljmc"  readonly="true" placeholder="零件名称" layoutconstraint="md:4;sm:4;" />
+					</form-group>
+					<form-group>
+						<label for="add_scph" text="生产批号" layoutconstraint="md:2;sm:2"/>
+						<text name="add_scph"  readonly="true"  placeholder="生产批号"  layoutconstraint="md:4;sm:4;"   />
+						<label for="add_xh" text="箱号" layoutconstraint="md:2"/>
+					    <text name="add_xh" readonly="true"   placeholder="箱号" layoutconstraint="md:4;"  ></text>
+					</form-group>
+					<form-group>
+						<label for="add_zxsl" text="零件数量" layoutconstraint="md:2"/>
+					    <text name="add_zxsl" readonly="true"   placeholder="零件数量" layoutconstraint="md:4;"  ></text>
+					    
+					    <label for="add_dwmc" text="单位" layoutconstraint="md:2"/>
+					    <text name="add_dwmc" readonly="true"   placeholder="单位" layoutconstraint="md:4;"  ></text>
+						<hidden name="add_dw"   />
+					   
+ 					</form-group>
+ 					<form-group>
+						<label for="add_rksl" text="入库数量" layoutconstraint="md:2"/>
+					    <text name="add_rksl"  placeholder="入库数量" layoutconstraint="md:4;"  ></text>
+ 					</form-group>
+					<form-group>
+						<label for="add_kfid" text="物料区域" layoutconstraint="md:2"/>
+					    <select name="add_kfid" url="/ljkcgl/kfSelect"  validate="{required:true}"  placeholder="请选择库房" layoutconstraint="md:4;" ></select>
+ 					
+						<label for="add_kwid" text="库位" layoutconstraint="md:2"/>
+					    <select name="add_kwid" parent="add_kfid" url="/ljkcgl/kwSelect" validate="{required:true}"  placeholder="请选择库位" layoutconstraint="md:4;" ></select>
+ 					</form-group>
+ 					<form-group>
+						<label for="add_zzjgid" text="部门" layoutconstraint="md:2"/>
+					    <select name="add_zzjgid" url="/ljkcgl/cjSelect" validate="{required:true}"  placeholder="请选择部门" layoutconstraint="md:4;" ></select>
+						<label for="add_bz"  text="备注" layoutconstraint="md:2"/>
+					    <text name="add_bz"  placeholder="备注" layoutconstraint="md:4;" ></text>
+ 					</form-group>
+				</form-body>
+			</form>
+		</modal-body>
+		<modal-footer>
+			<button name="addBtnSubmit" label="提交" type="button" context="primary" onClick="addBtnClick"/>
+			<button name="closeAddBtn" label="取消" type="button" context="primary"  onClick="closeAddWindow"></button>
+		</modal-footer>
+	</modal>
+	
+	<attribute name="javascript">
+	<![CDATA[
+	
+		function ready(){
+			$.simpleValidator.addMethod("positive", function(value, element) {
+			var regex = /^[1-9]\d*$/;
+			return regex.test(value);
+			}, "请输入正整数");
+			
+		}
+		
+		var rowid;
+		document.onkeydown=function(event){            
+			var e = event || window.event || arguments.callee.caller.arguments[0];            
+			if(e && e.keyCode==13){     
+			 	//saveBtnClick();
+			}       
+		}; 
+		function table_kcxxClickrow(rowid,status) {
+			if(status)
+			{
+				ui.table("table_kcxx").editRow(rowid);
+			}else{
+				ui.table("table_kcxx").restoreRow(rowid);
+			}
+		}
+		function table_ljkcClickrow(rowid,status){
+			rowid = rowid
+		}
+		function gotorkWindow() {
+			//入库
+			window.location.href=ui.getRealUrl("/ljkcgl/query_rkxx");
+		}
+		function gotockWindow() {
+			//出库页面 TODO 修改设计，
+			var data_row = {};
+			
+			data_row.ljid = ui.table("table_kcgl").getCell(rowid,"ljid");
+			data_row.ljbh = ui.table("table_kcgl").getCell(rowid,"ljbh");
+			data_row.ljmc = ui.table("table_kcgl").getCell(rowid,"ljmc");
+			window.location.href=ui.getRealUrl("/ljkcgl/table_ckxx?data:"+JSON.stringify(data_row));
+		}
+		
+		function addkcglRow() {
+			var rowid = (new Date()).getTime();																												 
+			ui.table("table_kcgl").addRow(rowid,{sbid: rowid,jyrq:(new Date()).getTime() ,addSign:"1"},"first");
+			ui.table("table_kcgl").editRow(rowid);
+			ui.table("table_kcgl").selectRow(rowid);
+		}
+		
+		function openQueryWindow() {
+	    	ui.modal("qyeryModal").show();
+	    }
+	    function closeQueryWindow() {
+	    	ui.modal("qyeryModal").hide();
+	    }
+	    
+		function openkcWindow(name,rowid) {
+			var data_row = {};
+			data_row.ljid = ui.table("table_kcgl").getCell(rowid,"ljid");
+			data_row.ljbh = ui.table("table_kcgl").getCell(rowid,"ljbh");
+			data_row.ljmc = ui.table("table_kcgl").getCell(rowid,"ljmc");
+			ui.table("table_kcxx").search(data_row);
+	    	ui.modal("kcModal").show();
+	    }
+	    function kcxxLoaded(){
+	    	var rowids = ui.table("table_kcxx").getRowids();
+	    	 for(var i = 0; i<rowids.length; i++) {
+	    	 	ui.table("table_kcxx").editRow(rowids[i]);
+	    	 }
+	    }
+	    function closekcModalClick() {
+	    	ui.modal("kcModal").hide();
+	    }
+	    
+   	    function resetQueryWindow() {
+	    	 $('#qyerykcglForm')[0].reset();
+	    	 ui.select('query_ljlxid').val('');
+			 ui.select('query_ljlbid').val('');
+	    }
+	    
+	 	function del_kcgl(name,rowid){
+	 		if('1'==ui.table("table_kcgl").getCell(rowid,"addSign"))
+	 		{
+	 			ui.table("table_kcgl").removeRow(rowid);
+	 			return false;
+	 		}
+	 		
+			$.ajax({
+		             type: "POST",
+		             url:  ui.getRealUrl("/ljkcgl/del_kcgl"),
+		             async: false,
+		             data: {data_list : rowid},
+		             success: function(data){
+		             	ui.table("table_kcgl").reload();
+		             }
+		         });
+		}
+		
+	 	function edit_kcgl(name,rowid){
+	 		ui.table("table_kcgl").editRow(rowid);
+			ui.table("table_kcgl").selectRow(rowid);
+		}
+		
+		function saverkModalClick(){
+			
+			var rows= ui.table("table_kcgl").getSelectedRows();
+			
+			var data_list= [];
+			for(var i = 0;i<rows.length;i++)
+			{
+				var data_row = {};
+				data_row.sbbh = $('#'+rows[i]+"_sbbh").val();
+				data_row.sbmc = $('#'+rows[i]+"_sbmc").val();
+				data_row.sbflid = $('#'+rows[i]+"_sbflid").val();
+				data_row.sblxid = $('#'+rows[i]+"_sblxid").val();
+				data_row.sbwz = $('#'+rows[i]+"_sbwz").val();
+				data_row.ccbh = $('#'+rows[i]+"_ccbh").val();
+				data_row.ip = $('#'+rows[i]+"_ip").val();
+				data_row.cj = $('#'+rows[i]+"_cj").val();
+				data_row.jgsl = $('#'+rows[i]+"_jgsl").val();
+				data_row.jyrq = $('#'+rows[i]+"_jyrq").val();
+				data_row.ssbmid = $('#'+rows[i]+"_ssbmid").val();
+				
+				data_row.addSign = ui.table("table_kcgl").getCell(rows[i],"addSign");
+				data_row.sbid = rows[i];
+				data_list.push(data_row);
+			}
+			$.ajax({
+		             type: "POST",
+		             url:  ui.getRealUrl("/ljkcgl/update_kcgl"),
+		             async: false,
+		             data: {data_list : JSON.stringify(data_list)},
+		             success: function(data){
+		             	ui.table("table_kcgl").reload();
+		             }
+		         });
+		}
+		
+		function queryBtnClick(){
+			var data_row = {};
+			data_row.query_ljbh = $('#query_ljbh').val();
+			data_row.query_scrwbh = $('#query_scrwbh').val();
+			data_row.query_pcbh = $('#query_pcbh').val();
+			ui.table("table_kcgl").search(data_row);
+			closeQueryWindow();
+		}
+		
+		//显示新增入库界面
+		function openAddWindow(name,rowid) {
+			ui.hidden("add_ljid").val(ui.table("table_kcgl").getCell(rowid,"ljid"));
+			ui.hidden("add_scrwpcid").val(ui.table("table_kcgl").getCell(rowid,"scrwpcid"));
+			ui.hidden("add_dw").val(ui.table("table_kcgl").getCell(rowid,"dw"));
+			ui.text("add_ljbh").val(ui.table("table_kcgl").getCell(rowid,"ljbh"));
+			ui.text("add_ljmc").val(ui.table("table_kcgl").getCell(rowid,"ljmc"));
+			ui.text("add_pcbh").val(ui.table("table_kcgl").getCell(rowid,"pcbh"));
+			ui.text("add_zxsl").val(ui.table("table_kcgl").getCell(rowid,"zxsl"));
+			ui.text("add_xh").val(ui.table("table_kcgl").getCell(rowid,"xh"));
+			ui.text("add_rksl").val(ui.table("table_kcgl").getCell(rowid,"gdywcsl"));
+			ui.hidden("add_gdid").val(ui.table("table_kcgl").getCell(rowid,"gdid"));
+			ui.hidden("add_scph").val(ui.table("table_kcgl").getCell(rowid,"scph"));
+			ui.hidden("add_mplh").val(ui.table("table_kcgl").getCell(rowid,"mplh"));
+			
+			$('#add_bz').val('');
+			ui.select('add_zzjgid').val('');
+			ui.select('add_kwid').val('');
+			ui.select('add_kfid').val('');
+			
+			var dwdm = ui.table("table_kcgl").getCell(rowid,"dw");
+			var dwmc;
+			if(dwdm =="10"){
+				dwmc = "件（个）";
+			}
+			else if(dwdm =="20"){
+				dwmc = "米";
+			}
+			else if(dwdm =="30"){
+				dwmc = "公斤";
+			}
+			else if(dwdm =="40"){
+				dwmc = "吨";
+			}
+			$("#add_dwmc").html(dwmc);
+			ui.text("add_dwmc").val(dwmc);
+			
+	    	ui.modal("addModal").show();
+	    }
+	    
+		function addModalOnShown() {
+	   		
+	    }
+	    //关闭新增入库界面
+	    function closeAddWindow() {
+	    	ui.modal("addModal").hide();
+	    }
+	    //弹出框，保存零件入库信息
+	    function addBtnClick() {
+		    var btn = this;
+			ui.form("form_add").ajaxSubmit(function(){	
+				//ui.success("准备Ajax提交 ...");		
+				btn.attr("disabled",true);
+			},
+			function(){
+				ui.modal("addModal").hide();
+				ui.table("table_kcgl").reload();
+				btn.attr("disabled",false);
+				ui.success("保存成功！");
+			},function(){
+				ui.error("保存失败！");
+				btn.attr("disabled",false);
+			});
+		}
+		
+	    //选择零件信息
+	    function selectLjbh(data){
+	    	ui.text("add_ljmc").val(data.ljmc);
+	    	ui.text("add_dwmc").val(data.dwmc);
+	    }
+	    
+	    //选择批次信息
+	    function selectPcbh(data){
+	    	//ui.hidden("add_pcid").val(data.pcid);
+	    }
+	]]>
+	</attribute>
+</view>

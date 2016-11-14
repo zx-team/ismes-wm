@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 零件库存明细 -->
+<model version="1.0.1" name="wm_ljkcmx">
+	<fields>
+		<kcmxid type="pk" pk="true" comment="库存流水ID" label="库存流水ID"/>
+		<sjkcid type="pk" required="false" comment="实际库存ID" label="实际库存ID"/>
+		<kclslbdm type="string" required="false" maxlength="20" comment="库存流水类别代码，入库/出库" label="库存流水类别代码"/>
+		<kfid type="pk" required="false"  comment="库房ID" label="库房ID"/>
+		<kwid type="pk" required="false"  comment="库位ID" label="库位ID"/>
+		<ljid type="pk" required="false"  comment="零件ID" label="零件ID"/>
+		<sl type ="decimal" required="false" length="8" precision="2"  comment="数量" label="数量"/>
+		<zzjgid type="pk" required="false"  comment="部门代码" label="部门代码"/>
+		<yggh type="pk" required="false"  comment="员工工号" label="员工工号"/>
+		<czsj type = "timestamp" required="false" comment="操作时间" label="操作时间"/>
+		<bz type ="string" required="false" maxlength="500"  comment="备注" label="备注"/>
+		<pcid type="pk" comment="批次id" label="批次id"/>
+		<!-- 新增字段 add by yangfan -->
+		<scph type="string" comment="生产批号" label="生产批号"/>
+		<kczt type="string" maxlength="2" comment="库存状态：是否已出库 0：未出库，1： 已出库" label="库存状态"/>
+		<mplh type="string" maxlength="30" comment="毛坯炉号" label="毛坯炉号"/>
+		<xh type="string" maxlength="30" comment="箱号" label="箱号"/>
+		<rksj type="timestamp" comment="入库时间" label="入库时间"/>
+		<rkry type="pk" required="false"  comment="入库人员，操作入库的用户id" label="入库人员id"/>
+		<cksj type="timestamp" comment="出库时间" label="出库时间"/>
+		<ckry type="pk" required="false"  comment="出库人员，操作出库的用户id" label="出库人员id"/>
+	</fields>
+</model>

@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view name="wm_kcgl" title="物料库存管理" onReady="ready">
+	<!-- 主页面table start -->
+	<normal-actions>
+		<!-- <button name="rkBtn" label="入库"  type="button" context="primary" onClick="gotorkWindow"></button> -->
+		<!-- <button name="ckBtn" label="出库"  type="button" context="primary" onClick="gotockWindow"></button> -->
+		<button name="queryBtn" label="查询"  type="button" icon="icon-query" onClick="openQueryWindow"></button>
+		<button name="addBtn" label="入库"  type="button" icon="icon-Storage" onClick="openAddWindow"></button>
+		<button name="importBtn" label="导入"  type="button" icon="icon-Storage" onClick="openImportWindow"></button>
+	</normal-actions>
+	<table name="table_kcgl" scroll="false" minheight="430" url="/kcgl/table_kcgl" layoutconstraint="md:12;sm:12;" >
+		<column label="材料规格" name="wlgg"></column>
+		<column label="毛坯炉号" name="mplh"></column>
+		<column label="物料id" name="wlid" hidden="true"></column>
+		<column label="物料编号" name="wlbh"></column>
+		<column label="物料名称" name="wlmc"></column>
+		<column label="物料类别" name="wllbdm" type="dict" dictionary="WLLB"></column>
+		<column label="物料类型" name="wllxdm"  type="dict" dictionary="WLLX"></column>
+		<column label="单位" name="wldwdm" type="dict" dictionary="JLDW" ></column>
+		<column label="数量" name="kcsl" ></column>
+		<column label="操作" type="operation">
+			<attribute name="formatoptions"><![CDATA[
+					[
+						{
+							name:"edit",
+							icon:"icon-Storage1",
+							label:"出库",
+							click:openkcWindow
+						}
+					]
+				]]></attribute>
+		</column>
+	</table>
+	<!-- 主页面table end -->
+	<!-- 物料查询窗体 start-->
+	<modal name="qyeryModal" heading="查询库存信息" sizing="large" show="false" keyboard="true"  onShown="resetQueryWindow">
+		<modal-body>
+			<form name="qyerykcglForm"  horizontal="true">
+				<form-body>
+					<form-group>
+						<label for="query_wlbh " text="物料编号" layoutconstraint="md:2;sm:2"/>
+						<text name="query_wlbh" placeholder="请输入物料编号" validate="{required:true}" layoutconstraint="md:7;sm:7;"/>
+					</form-group>
+					<form-group>
+						<label for="query_wlgg " text="材料规格" layoutconstraint="md:2;sm:2"/>
+						<text name="query_wlgg" placeholder="请输入材料规格" validate="{required:true}" layoutconstraint="md:7;sm:7;"/>
+					</form-group>
+					<form-group>
+						<label for="query_wlmc" text="物料名称" layoutconstraint="md:2;sm:2"/>
+						<text name="query_wlmc" placeholder="请输入物料名称" layoutconstraint="md:7;sm:7;"/>
+					</form-group>
+					<form-group>
+						<label for="query_wllxid" text="物料类型" layoutconstraint="md:2"/>
+					    <select name="query_wllxid" dictionary="WLLX"  placeholder="请选择物料类型" layoutconstraint="md:4;"></select>
+ 					</form-group>
+					<form-group>
+						<label for="query_wllbid" text="物料类别" layoutconstraint="md:2"/>
+					    <select name="query_wllbid" dictionary="JGLB"  placeholder="请选择物料类别" layoutconstraint="md:4;"></select>
+ 					</form-group>
+				</form-body>
+			</form>
+		</modal-body>
+		<modal-footer>
+				<button name="resetqyeryModalClick" label="重置" type="button" onClick="resetQueryWindow"></button>
+				<button name="closeqyeryModalClick" label="取消" type="button" onClick="closeQueryWindow"></button>
+				<button name="qyeryModalClick" label="查询" type="button" context="primary" onClick="queryBtnClick"></button>
+		</modal-footer>
+	</modal>
+	<!-- 物料查询窗体 end -->
+	<!-- 物料出库 start -->
+	<modal name="kcModal" heading="库存信息" sizing="huge" show="false" keyboard="true" >
+		<modal-body>
+			<table name="table_kcxx"  scroll="false"  multiselect="true" onSelectRow="table_kcxxClickrow"  url="/kcgl/table_kcxx" >
+				<column label="物料库存id" name="sjkcid" hidden="true"></column>
+				<column label="库存流水id" name="kclsid" key="true" hidden="true"></column>
+				<column label="物料id" name="wlid" hidden="true" ></column>
+				<column label="件号" name="jh" hidden="true" ></column>
+				<column label="毛坯炉号" name="mplh" hidden="true" ></column>
+				<column label="物料编码" name="wlbh" ></column>
+				<column label="物料名称" name="wlmc"></column>
+				<column label="库房" name="kfid"  hidden="true"></column>
+				<column label="库房" name="kfmc" ></column>
+				<column label="库位" name="kwid" hidden="true"></column>
+				<column label="物料规格" name="wlgg" hidden="true"></column>
+				<column label="物料类别" name="wllb" hidden="true"></column>
+				<column label="库位" name="kwmc" ></column>
+				<!-- <column label="批次" name="pcbh" ></column> -->
+				<!-- <column label="入库日期" name="djsj"  type="date"></column> -->
+				<column label="数量" name="sl"  ></column>
+				<column label="出库数量" name="ckwlsl" editrules="{required:true,maxlength:6,positive:true}" ></column>
+				<column label="领用部门" name="zzjgid" editable="true"  edittype="select" type="text" editrules="{required:true}" >
+				<attribute name="editoptions"><![CDATA[
+					{
+						url:"cjSelect"
+					}
+					]]></attribute>
+				</column>
+			</table>
+		</modal-body>
+		<modal-footer>
+			<button name="closerkModalWindow" label="关闭" type="button" context="primary"  onClick="closekcModalClick"></button>
+			<button name="ckBtn" label="出库" type="button" context="primary"  onClick="ckClick"></button>
+		</modal-footer>
+	</modal>
+	<!-- 物料出库 end -->
+	<!-- 物料入库 start -->
+	<modal name="addModal" heading="物料入库" sizing="large" show="false" keyboard="true"  onShown="addModalOnShown" >
+		<modal-body>
+			<form name="form_add"  horizontal="true"  action="/kcgl/save_rkxx" multipart="true">
+				<form-body>
+					<form-group>
+						<label for="add_rkdh" text="入库单号" layoutconstraint="md:2;"/>
+						<text name="add_rkdh"  placeholder="请输入入库单号" layoutconstraint="md:4;sm:4;" validate="{required:true}" ></text>
+						
+						<label for="add_mplh" text="毛坯炉号" layoutconstraint="md:2;"/>
+						<text name="add_mplh" placeholder="请输入毛坯炉号" layoutconstraint="md:4;" />
+					</form-group>
+					<form-group>
+						<label for="add_wlgg" text="材料规格" layoutconstraint="md:2;"/>
+						<search name="add_wlgg" url="/kcgl/wlxxSelect" placeholder="请输入材料规格" displaykey="label" searchkey="label value" onSelected="selectWlbh" layoutconstraint="md:4;sm:4;" validate="{required:true}" ></search>
+						<hidden name="add_wllb"></hidden>
+						<hidden name="add_wlid"></hidden>
+						<label for="add_wlbh" text="物料编号" layoutconstraint="md:2;"/>
+						<text name="add_wlbh" placeholder="物料编号" readonly="true" layoutconstraint="md:4" />
+					</form-group>
+					<form-group>
+						<label for="add_wlmc" text="物料名称" layoutconstraint="md:2;"/>
+						<text name="add_wlmc" placeholder="物料名称" readonly="true" layoutconstraint="md:4;" />
+						
+						<label for="add_wlpp" text="物料品牌" layoutconstraint="md:2;"/>
+						<text name="add_wlpp" placeholder="物料品牌" readonly="true" layoutconstraint="md:4;" ></text>
+					</form-group>
+					<form-group>
+						<label for="add_wltm" text="物料条码" layoutconstraint="md:2;"/>
+						<text name="add_wltm" placeholder="物料条码" readonly="true" layoutconstraint="md:4;"></text>
+						
+ 						
+ 						<label for="add_dwmc" text="单位" layoutconstraint="md:2;"/>
+						<text name="add_dwmc" placeholder="单位" readonly="true"  layoutconstraint="md:4;" />
+					</form-group>
+					<form-group>
+						<label for="add_pcid" text="批次编号" layoutconstraint="md:2;"/>
+						<text name="add_pcid"  placeholder="请输入批次编号"  layoutconstraint="md:4;"  validate="{required:true}" ></text>
+						
+						<label for="add_jglb" text="加工类别" layoutconstraint="md:2;"/>
+						<text name="add_jglb" placeholder="加工类别" readonly="true"  layoutconstraint="md:4;" />
+ 					</form-group>
+					<form-group>
+						<label for="add_kcsl" text="物料数量" layoutconstraint="md:2"/>
+					    <text name="add_kcsl" validate="{required:true,number:true,maxlength:6}"   placeholder="请输入物料数量" layoutconstraint="md:4;"  ></text>
+					    
+						<label for="add_kfid" text="物料区域" layoutconstraint="md:2"/>
+						<select name="add_kfid" url="/ljkcgl/kfSelect"  validate="{required:true}"  placeholder="请选择物料区域" layoutconstraint="md:4;" ></select>
+ 						
+ 						</form-group>
+ 					<form-group>
+ 						<label for="add_kwid" text="库位" layoutconstraint="md:2"/>
+					    <select name="add_kwid" parent="add_kfid" url="/ljkcgl/kwSelect" validate="{required:true}"  placeholder="请选择库位" layoutconstraint="md:4;" ></select>
+ 					
+						<label for="add_zzjgid" text="部门" layoutconstraint="md:2"/>
+					    <select name="add_zzjgid" url="/kcgl/cjSelect" validate="{required:true}"  placeholder="请选择部门" layoutconstraint="md:4;" ></select>
+ 					</form-group>
+ 					<form-group>
+						<label for="add_jh" text="件号" layoutconstraint="md:2;"/>
+						<text name="add_jh"  placeholder="请输入件号"  layoutconstraint="md:4;"  validate="{required:true}" ></text>
+ 					</form-group>
+ 					<form-group>
+						<label for="add_bz"  text="备注" layoutconstraint="md:2"/>
+					    <text name="add_bz"  placeholder="备注" layoutconstraint="md:10;" ></text>
+ 					</form-group>
+				</form-body>
+			</form>
+		</modal-body>
+		<modal-footer>
+			<button name="addBtnSubmit" label="提交" type="button" context="primary" onClick="addBtnClick"/>
+			<button name="closeAddBtn" label="取消" type="button" context="primary"  onClick="closeAddWindow"></button>
+		</modal-footer>
+	</modal>
+	<!-- 物料入库 end -->
+	<!-- 导入文件界面 start -->
+	<modal name="importModal" heading="导入文件" sizing="middle" show="false" keyboard="true" onShown="importModalOnShown">
+		<modal-body>
+			<form name="uploadfile" horizontal="true" action="/kcgl/uploadfile" method="post">
+				<form-body>
+					<form-group>
+						<label for="importfile" text="选择文件" layoutconstraint="md:2"/>
+						<file name="importFile" layoutconstraint="md:8" validate="{required:true}"></file>
+					</form-group>
+					<form-group>
+						<label for="import_kfid" text="物料区域" layoutconstraint="md:2"/>
+						<select name="import_kfid" url="/ljkcgl/kfSelect"  validate="{required:true}"  placeholder="请选择物料区域" layoutconstraint="md:8;" ></select>
+ 					</form-group>
+ 					<form-group>
+						<label for="import_kwid" text="库位" layoutconstraint="md:2"/>
+					    <select name="import_kwid" parent="import_kfid" url="/ljkcgl/kwSelect" validate="{required:true}"  placeholder="请选择库位" layoutconstraint="md:8;" ></select>
+ 					</form-group>
+ 					<form-group>
+						<label for="wllb" text="物料类别" layoutconstraint="md:2"/>
+						<select name="wllb" placeholder="请选择物料类别" 
+							validate="{required:true}" multiple="false" layoutconstraint="md:8;">
+							<option value="1" label="毛坯" />
+							<option value="0" label="原材料" />
+						</select>
+					</form-group>
+				</form-body>	
+			</form>
+		</modal-body>
+		<modal-footer>
+			<button name="closeimportModalWindow" label="关闭" type="button" context="primary"  onClick="closeimportModalWindow"></button>
+			<button name="uploadBtn" label="上传" type="button" context="primary"  onClick="uploadClick"></button>
+		</modal-footer>
+	</modal>
+	<modal name="myModal" heading="未导入数据" sizing="middle" show="false" keyboard="true">
+		<modal-body>
+			<table name="wdrdata" showrownum="true" scroll="true" minheight="300">
+				<column label="入库单号" name="rkdh"/>
+				<column label="规格" name="wlgg"/>
+				<column label="件号" name="jh"/>
+				<column label="未导入原因" name="reason"/>
+			</table>
+		</modal-body>
+		<modal-footer>				
+			<button label="关闭" type="button" name="closeModal" onClick="closewdrmodal"></button>
+		</modal-footer>
+	</modal>
+	<!-- 导入文件 end -->
+	<attribute name="javascript">
+	<![CDATA[
+			
+		function  ready(){
+			$.simpleValidator.addMethod("positive", function(value, element) {
+			var regex = /^[1-9]\d*$/;
+			return regex.test(value);
+			}, "请输入正整数");
+			
+			$("#add_jh").blur(function(){
+				var jh = $('#add_jh').val();
+				getSingleJh(jh);
+			});
+			
+		}
+		
+		function getSingleJh(jh){
+			$.ajax({
+	             type: "POST",
+	             url:  ui.getRealUrl("/kcgl/getSingleJh"),
+	             async: false,
+	             data: {jh : jh},
+	             success: function(data){
+	             	if(data.data.length > 0){
+		             	ui.warn('件号不能重复');
+		             	$('#add_jh').val('');
+	             	}
+	             }
+	         });
+		}
+			
+		document.onkeydown=function(event){            
+			var e = event || window.event || arguments.callee.caller.arguments[0];            
+			if(e && e.keyCode==13){     
+			 //saveBtnClick();
+			}       
+		}; 
+		function table_kcglClickrow(rowid,status) {
+			if(status)
+			{
+				ui.table("table_kcgl").editRow(rowid);
+			}else{
+				ui.table("table_kcgl").restoreRow(rowid);
+			}
+		}
+		function table_kcxxClickrow(rowid,status) {
+			if(status)
+			{
+				ui.table("table_kcxx").editRow(rowid);
+			}else{
+				ui.table("table_kcxx").restoreRow(rowid);
+			}
+		}
+		function addkcglRow() {
+			var rowid = (new Date()).getTime();																												 
+			ui.table("table_kcgl").addRow(rowid,{sbid: rowid,jyrq:(new Date()).getTime() ,addSign:"1"},"first");
+			ui.table("table_kcgl").editRow(rowid);
+			ui.table("table_kcgl").selectRow(rowid);
+		}
+		
+		function openQueryWindow() {
+	    	ui.modal("qyeryModal").show();
+	    }
+	    function closeQueryWindow() {
+	    	ui.modal("qyeryModal").hide();
+	    }
+		function openkcWindow(name,rowid) {
+			var data_row = {};
+			
+			data_row.wllb = ui.table("table_kcgl").getCell(rowid,"wllbdm");
+			data_row.mplh = ui.table("table_kcgl").getCell(rowid,"mplh");
+			data_row.wlgg = ui.table("table_kcgl").getCell(rowid,"wlgg");
+			data_row.wlid = ui.table("table_kcgl").getCell(rowid,"wlid");
+			data_row.wlbh = ui.table("table_kcgl").getCell(rowid,"wlbh");
+			data_row.wlmc = ui.table("table_kcgl").getCell(rowid,"wlmc");
+			data_row.pcid = ui.table("table_kcgl").getCell(rowid,"pcid");
+			ui.table("table_kcxx").search(data_row);
+	    	ui.modal("kcModal").show();
+	    	
+	    }
+	    function closekcModalClick() {
+	    	ui.modal("kcModal").hide();
+	    }
+	    
+   	    function resetQueryWindow() {
+	    	 $('#qyerykcglForm')[0].reset();
+	    	 ui.select('query_wllxid').val('');
+			 ui.select('query_wllbid').val('');
+	    }
+	    
+	    
+		var rowid;
+		
+	 	function del_kcgl(name,rowid){
+	 		if('1'==ui.table("table_kcgl").getCell(rowid,"addSign"))
+	 		{
+	 			ui.table("table_kcgl").removeRow(rowid);
+	 			return false;
+	 		}
+	 		
+			$.ajax({
+		             type: "POST",
+		             url:  ui.getRealUrl("/kcgl/del_kcgl"),
+		             async: false,
+		             data: {data_list : rowid},
+		             success: function(data){
+		             	ui.table("table_kcgl").reload();
+		             }
+		         });
+		}
+		
+	 	function edit_kcgl(name,rowid){
+	 		ui.table("table_kcgl").editRow(rowid);
+			ui.table("table_kcgl").selectRow(rowid);
+		}
+		
+		function saverkModalClick(){
+			
+			var rows= ui.table("table_kcgl").getSelectedRows();
+			var data_list= [];
+			for(var i = 0;i<rows.length;i++)
+			{
+				var data_row = {};
+				data_row.sbbh = $('#'+rows[i]+"_sbbh").val();
+				data_row.sbmc = $('#'+rows[i]+"_sbmc").val();
+				data_row.sbflid = $('#'+rows[i]+"_sbflid").val();
+				data_row.sblxid = $('#'+rows[i]+"_sblxid").val();
+				data_row.sbwz = $('#'+rows[i]+"_sbwz").val();
+				data_row.ccbh = $('#'+rows[i]+"_ccbh").val();
+				data_row.ip = $('#'+rows[i]+"_ip").val();
+				data_row.cj = $('#'+rows[i]+"_cj").val();
+				data_row.jgsl = $('#'+rows[i]+"_jgsl").val();
+				data_row.jyrq = $('#'+rows[i]+"_jyrq").val();
+				data_row.ssbmid = $('#'+rows[i]+"_ssbmid").val();
+				data_row.addSign = ui.table("table_kcgl").getCell(rows[i],"addSign");
+				data_row.sbid = rows[i];
+				data_list.push(data_row);
+			}
+			$.ajax({
+	             type: "POST",
+	             url:  ui.getRealUrl("/kcgl/update_kcgl"),
+	             async: false,
+	             data: {data_list : JSON.stringify(data_list)},
+	             success: function(data){
+	             	ui.table("table_kcgl").reload();
+	             }
+			});
+		}
+		
+		function queryBtnClick(){
+			var data_row = {};
+			data_row.query_wlbh = $('#query_wlbh').val();
+			data_row.query_wlgg = $('#query_wlgg').val();
+			data_row.query_wlmc = $('#query_wlmc').val();
+			data_row.query_wllxdm = $('#query_wllxid').val();
+			data_row.query_wllbdm = $('#query_wllbid').val();
+			ui.table("table_kcgl").search(data_row);
+			closeQueryWindow();
+		}
+		
+		function ckClick() {
+			var rows= ui.table("table_kcxx").getSelectedRows();
+			if(rows.length<=0){
+				ui.warn("请选择出库数据！","提示");
+				return;
+			}
+			var data_list= [];
+			for(var i = 0;i<rows.length;i++)
+			{
+				if(!ui.table("table_kcxx").validate(rows[i]))
+				{
+					ui.warn("请检查录入数据!", "提示!");
+					return false;
+				}
+				
+				var data_row = {};
+				data_row.wlid = ui.table("table_kcxx").getCell(rows[i],"wlid");
+				data_row.pcid = ui.table("table_kcxx").getCell(rows[i],"pcid");
+				data_row.sjwlkcid = ui.table("table_kcxx").getCell(rows[i],"sjkcid");
+				data_row.kcsl = ui.table("table_kcxx").getCell(rows[i],"sl");
+				data_row.kfid = ui.table("table_kcxx").getCell(rows[i],"kfid");
+				data_row.kwid = ui.table("table_kcxx").getCell(rows[i],"kwid");
+				data_row.mplh = ui.table("table_kcxx").getCell(rows[i],"mplh");
+				data_row.jh = ui.table("table_kcxx").getCell(rows[i],"jh");
+				data_row.wllb = ui.table("table_kcxx").getCell(rows[i],"wllb");
+				data_row.wlgg = ui.table("table_kcxx").getCell(rows[i],"wlgg");
+				data_row.ckwlsl = ui.table("table_kcxx").getCell(rows[i],"ckwlsl");
+				data_row.zzjgid = $('#'+rows[i]+"_zzjgid").val();
+				data_row.kclsid = ui.table("table_kcxx").getCell(rows[i],"kclsid");
+				data_row.kclslx_dm = 20;
+				if( Number(data_row.sl) <=0 ){
+					ui.alert("库存数量不足，不能进行出库！");
+					return;
+				}
+				
+				if(Number(data_row.ckwlsl) > Number(data_row.sl)){
+					ui.alert("出库数量不能大于库存数量，请重新输入出库数量！")
+					return;
+				}
+				data_list.push(data_row);
+			}
+			$.ajax({
+	             type: "POST",
+	             url:  ui.getRealUrl("/kcgl/update_ckxx"),
+	             async: false,
+	             data: {data_list : JSON.stringify(data_list)},
+	             success: function(data){
+	             	//window.location.href=ui.getRealUrl("/kcgl/query_kcgl");
+	             	ui.table("table_kcgl").reload();
+	             	closekcModalClick();
+	             	ui.success("出库成功");
+	             }
+			});
+		}
+		
+		//显示新增入库界面
+		function openAddWindow() {
+			ui.search('add_wlgg').val('');
+			ui.text('add_wlid').val('');
+			ui.text('add_pcid').val('');
+			ui.text('add_kcsl').val('');
+			ui.text('add_jh').val('');
+			ui.select('add_kfid').val('');
+			ui.select("add_kwid").val('');
+			ui.select("add_zzjgid").val('');
+			ui.text("add_bz").val(''); 
+	    	ui.modal("addModal").show();
+	    }
+	    
+		function addModalOnShown() {
+	   		$('#form_add')[0].reset(); 
+	    	$('#form_add').validate().resetForm();
+	    }
+	    //关闭新增入库界面
+	    function closeAddWindow() {
+	    	ui.modal("addModal").hide();
+	    }
+	    //弹出框，保存零件入库信息
+	    function addBtnClick() {
+	    	var _kcsl = ui.text('add_kcsl').val();
+	    	if(_kcsl <= 0){
+	    		ui.warn('入库数量需大于0');
+	    		return;
+	    	}
+		    var btn = this;
+			ui.form("form_add").ajaxSubmit(function(){	
+				//ui.success("准备Ajax提交 ...");		
+				btn.attr("disabled",true);
+			},
+			function(){
+				ui.modal("addModal").hide();
+				ui.table("table_kcgl").reload();
+				btn.attr("disabled",false);
+				ui.success("保存成功！");
+			},function(){
+				ui.error("保存失败！");
+				btn.attr("disabled",false);
+			});
+		}
+		
+		 //选择零件信息
+	    function selectWlbh(data){
+	    	ui.text("add_wllb").val(data.wllb);
+	    	ui.text("add_wlid").val(data.wlid);
+	    	ui.text("add_wlmc").val(data.wlmc);
+	    	ui.text("add_dwmc").val(data.dwmc);
+	    	ui.text("add_wlpp").val(data.wlpp);
+	    	ui.text("add_wltm").val(data.wltm);
+	    	ui.text("add_jglb").val(data.wllbdm);
+	    	ui.text("add_wlbh").val(data.wlbh);
+	    }
+	    
+	    //选择批次信息
+	    function selectPcbh(data){
+	    	//ui.hidden("add_pcid").val(data.pcid);
+	    }
+	    
+	    function openImportWindow(){
+	    	ui.modal("importModal").show();
+	    }
+	    
+	    function closeimportModalWindow(){
+	    	ui.modal("importModal").hide();
+	    }
+	    
+	    function uploadClick(){
+	    	ui.form("uploadfile").ajaxSubmit(function(){	
+				ui.success("物料导入中 ...");		
+				
+			},function(data){
+				if(data.data.length > 0){
+					for(var i = 0, len = data.data.length; i < len; i++){
+						var trHTML = "<tr>";
+						trHTML += "<td>" + (i+1) + "</td>"
+	           			trHTML += "<td>" + data.data[i].rkdh + "</td>"
+	           			trHTML += "<td>" + data.data[i].wlgg + "</td>"
+	           			trHTML += "<td>" + data.data[i].jh + "</td>"
+	           			trHTML += "<td>" + data.data[i].reason + "</td>"
+	           			trHTML += "</tr>";
+           			$("#wdrdata").append(trHTML);
+					}
+           			ui.modal("myModal").show();
+				}
+				closeimportModalWindow();
+				ui.table("table_kcgl").reload();
+				ui.success("导入成功！");
+			},function(){
+				ui.error("导入失败！");
+				
+			});
+	    }
+	    
+	    function closewdrmodal(){
+	    	ui.modal("myModal").hide();
+	    }
+	    
+	    function importModalOnShown(){
+	    	$('#uploadfile')[0].reset();
+	    	$('#uploadfile').validate().resetForm();
+	    	ui.select('import_kfid').val('');
+	    	ui.select('import_kwid').val('');
+	    	ui.select('wllb').val('');
+	    }
+	]]>
+	</attribute>
+</view>

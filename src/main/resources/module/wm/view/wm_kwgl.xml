@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view name="wm_kwgl" title="库位管理">
+	<normal-actions>
+		<button name="addBtn" label="添加"  type="button" icon="icon-Add_to" onClick="addRow" ></button>
+	</normal-actions>
+	<table name="table_kwgl" scroll="false" minheight="430" url="/kwgl/table_kwgl" layoutconstraint="md:12;sm:12;"  onLoaded="table_editreset" onDblClickRow="dbltable_kwglClickrow" >
+		<column label="库位id" name="kwid" key="true"  hidden="true"></column>
+		<column label="库位编号" name="kwbh" editable="true" editrules="{required:true}"></column>
+		<column label="库位名称" name="kwmc" editable="true" editrules="{required:true}"></column>
+		<column label="库位位置" name="kwwz" editable="true" editrules="{required:true}"></column>
+		<column label="所属库房" name="kfid" sortable="true" type="text" editable="true"  edittype="select" editrules="{required:true}">
+			<attribute name="editoptions"><![CDATA[
+				{ url:"/kwgl/kfSelect" }
+				]]>
+			</attribute>
+			<attribute name="formatoptions"><![CDATA[
+					{transform : "kfmc"}
+			]]></attribute>
+		</column>
+		<column label="所属库房" name="kfmc" sortable="true" type="transform" />
+		<column label="启用标志" name="qybsdm" editable="true" type="dict" dictionary="QYBJ" ></column>
+		<column label="操作" type="operation">
+			<attribute name="formatoptions"><![CDATA[
+					[
+						{
+							name:"edit",
+							icon:"icon-edit",
+							label:"编辑",
+							click:edit_Row
+						},
+						{
+							name:"del",
+							icon:"icon-delete",
+							label:"删除",
+							click:delRow
+						}
+					]
+				]]></attribute>
+		</column>
+		<column label="新增标记" name="addSign"  hidden="true" ></column>
+	</table>
+	<attribute name="javascript">
+		<![CDATA[
+		
+		//记录全局
+		var editid = "";//rowid
+		var editkwbh = "";//库位编号
+		var editkwmc = "";//库位名称
+		var editkwwz = "";//库位位置
+		var editkfid = "";//所属部门
+		var editqybsdm = "";//启用标志
+		
+		
+		document.onkeydown=function(event){ 
+			var e = event || window.event || arguments.callee.caller.arguments[0];  
+			if(e && e.keyCode==13){
+			
+			 	saveBtnClick();//回车保存
+			}   
+			if(e && e.keyCode==27){     
+				ui.table("table_kwgl").restoreRow(editid);
+			 	editid = "";//ESC退出编辑
+			}     
+		}; 
+		
+		//加载结束初始化
+		function table_editreset() {
+			editid = "";
+		}
+		
+		//新增一行
+		function addRow() {
+		
+			if(("" != editid && rowid!=editid)&&(editkwbh != $('#'+editid+"_kwbh").val()||editkwmc != $('#'+editid+"_kwmc").val()
+			||editkwwz != $('#'+editid+"_kwwz").val() )) {
+			//不判断下拉框的数据，下来框需要加载完成后才能取到值||editqybsdm != $('#'+editid+"_qybsdm").val()||editkfid != $('#'+editid+"_kfid").val()
+				ui.confirm("您是否要保存该条记录？", function(data){
+				if(data){
+						saveBtnClick();
+					}else{
+						ui.table("table_kwgl").restoreRow(editid);
+						var rowid = (new Date()).getTime();	
+						ui.table("table_kwgl").addRow(rowid,{addSign:"1"},"first");
+						ui.table("table_kwgl").editRow(rowid);
+						editid = rowid;
+						editkwbh = $('#'+editid+"_kwbh").val();
+						editkwmc = $('#'+editid+"_kwmc").val();
+						editkwwz = $('#'+editid+"_kwwz").val();
+						editkfid = $('#'+editid+"_kfid").val();
+						//editqybsdm = $('#'+editid+"_qybsdm").val();
+					}
+				});
+			}else {
+				if('1'==ui.table("table_kwgl").getCell(editid,"addSign"))
+				{
+					ui.warn("请先保存当前信息!", "提示!");
+					return;
+				}
+				ui.table("table_kwgl").restoreRow(editid);
+				var rowid = (new Date()).getTime();																											 
+				ui.table("table_kwgl").addRow(rowid,{addSign:"1"},"first");
+				ui.table("table_kwgl").editRow(rowid);
+				ui.table("table_kwgl").selectRow(rowid);
+				editid = rowid;
+				
+				editkwbh = $('#'+editid+"_kwbh").val();
+				editkwmc = $('#'+editid+"_kwmc").val();
+				editkwwz = $('#'+editid+"_kwwz").val();
+				editkfid = $('#'+editid+"_kfid").val();
+			}
+		}
+		//删除数据	
+		function delRow(name,rowid){
+		
+		 	if('1'==ui.table("table_kwgl").getCell(rowid,"addSign"))
+		 	{
+		 		ui.table("table_kwgl").removeRow(rowid);
+		 		editid = "";
+		 		return false;
+		 	}
+		 	ui.confirm("您确定要删除该条记录吗？", function(req){
+			if(req){
+		 	$.ajax({
+		        type: "POST",
+		        url:  ui.getRealUrl("/kwgl/del_kfxx"),
+		        async: false,
+		        data: {data_list : rowid},
+		        success: function(data){
+		          	ui.table("table_kwgl").removeRow(rowid);
+		            ui.success("删除成功！");
+		         },
+		         error:function(){
+		         	//ui.table("table_kwgl").reload();
+		            ui.error("删除失败！");
+		          }
+		     });
+		      }
+		     });
+		}
+			
+		//保存
+		function saveBtnClick(){
+			if(!ui.table("table_kwgl").validate(editid))
+			{
+				ui.warn("请检查录入数据!", "提示!");
+				return false;
+			}
+			var data_list= [];
+			if(""!=editid)
+			{
+				//alert(ui.table("table_kwgl").getCell(editid,"kwid"));
+				var data_row = {};
+				data_row.kwid = ui.table("table_kwgl").getCell(editid,"kwid");
+				data_row.kwbh = $('#'+editid+"_kwbh").val();
+				data_row.kwmc = $('#'+editid+"_kwmc").val();
+				data_row.kwwz = $('#'+editid+"_kwwz").val();
+				data_row.kfid = $('#'+editid+"_kfid").val();
+				data_row.qybsdm = $('#'+editid+"_qybsdm").val();
+				data_row.addSign = ui.table("table_kwgl").getCell(editid,"addSign");
+				//data_row.kwid = editid;
+				data_list.push(data_row);
+				$.ajax({
+		             type: "POST",
+		             url:  ui.getRealUrl("/kwgl/update_kfxx"),
+		             async: false,
+		             data: {data_list : JSON.stringify(data_list)},
+		             success: function(data){
+		             	if(data.code ==0){
+			             	editid = "";
+			             	ui.table("table_kwgl").reload();
+			             	ui.success("保存成功！");
+		             	}
+		             	else {
+		             		ui.error(data.message,"提示");
+		             	}
+		                
+		             },
+		             error:function(data){
+		             	ui.error("保存失败！");
+		             }
+		         });
+			}
+		}
+		function edit_Row(name,rowid){
+			dbltable_kwglClickrow(rowid,'') ;
+		}
+		//双击进入修改
+		function dbltable_kwglClickrow(rowid,status) {
+		//alert("editkwbh" + editkwbh);
+		//alert( $('#'+editid+"_kwbh").val());
+		//alert( $('#'+editid+"_kwmc").val());
+		//alert( $('#'+editid+"_kwwz").val());
+		//alert( $('#'+editid+"_kfid").val());
+		//alert( $('#'+editid+"_qybsdm").val());
+				
+			if(("" != editid && rowid!=editid)&&(editkwbh != $('#'+editid+"_kwbh").val()||editkwmc != $('#'+editid+"_kwmc").val()
+			||editkwwz != $('#'+editid+"_kwwz").val() )) {
+			//不判断下拉框的数据，下来框需要加载完成后才能取到值||editqybsdm != $('#'+editid+"_qybsdm").val()||editkfid != $('#'+editid+"_kfid").val()
+				ui.confirm("您是否要保存该条记录？", function(data){
+				if(data){
+						saveBtnClick();
+					}else{
+						ui.table("table_kwgl").restoreRow(editid);
+						ui.table("table_kwgl").editRow(rowid);
+						editid = rowid;
+						editkwbh = $('#'+editid+"_kwbh").val();
+						editkwmc = $('#'+editid+"_kwmc").val();
+						editkwwz = $('#'+editid+"_kwwz").val();
+						editkfid = $('#'+editid+"_kfid").val();
+						//editqybsdm = $('#'+editid+"_qybsdm").val();
+					}
+				});
+			}else {
+				ui.table("table_kwgl").restoreRow(editid);
+				ui.table("table_kwgl").editRow(rowid);
+				editid = rowid;
+				editkwbh = $('#'+editid+"_kwbh").val();
+				editkwmc = $('#'+editid+"_kwmc").val();
+				editkwwz = $('#'+editid+"_kwwz").val();
+				editkfid = $('#'+editid+"_kfid").val();
+				//editqybsdm = $('#'+editid+"_qybsdm").val();
+				//alert(editid + " " + editkwbh + " " + editkwmc + " " + editkwwz + " " + editkfid + " " + editqybsdm + " "  );
+			}
+		}
+		]]>
+	</attribute>
+</view>
